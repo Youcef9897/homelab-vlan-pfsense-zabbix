@@ -103,7 +103,8 @@ Le détail complet de ces deux diagnostics se trouve dans le [rapport complet](d
 ## 7 Documentation complète
 
 Le rapport détaillé, avec le contexte, les configurations complètes, les tests de validation et le déroulé du troubleshooting, est disponible ici :
-[Rapport-Projet-Homelab-VLAN.pdf](docs/Rapport-Projet-Homelab-VLAN.pdf)
+[Rapport-Projet-Homelab-VLAN.pdf](https://github.com/user-attachments/files/32176285/Rapport-Projet-Homelab-VLAN.pdf)
+
 
 ## 8 Prochaines étapes
 
