@@ -1,10 +1,10 @@
-# 1 Homelab Réseau — VLAN, pfSense & Zabbix :
+# Homelab réseau — VLAN, pfSense & Zabbix
 
-Ce dépôt regroupe un projet personnel que j'ai commencé en parallèle de ma formation CCNA2. L'idée de départ était simple : ne pas me contenter de la théorie et des quiz, mais construire un vrai petit réseau de A à Z, avec ses VLAN, son pare-feu et sa supervision, pour mieux comprendre comment tout ça s'articule en pratique.
+Ce dépôt regroupe un projet personnel que j'ai commencé en parallèle de ma formation Cisco NetAcad (parcours CCNA, module 2 « Switching, Routing and Wireless Essentials »). L'idée de départ était simple : ne pas me contenter de la théorie et des quiz, mais construire un vrai petit réseau de A à Z, avec ses VLAN, son pare-feu et sa supervision, pour mieux comprendre comment tout ça s'articule en pratique.
 
-## 2 Contexte et objectifs :
+## Contexte et objectifs
 
-Je suis étudiant en cycle ingénieur, actuellement en CCNA2, avec l'ambition de continuer vers le CCNA3 puis CompTIA Security+. Ce homelab est pensé pour grandir avec ma formation, et pour me donner un vrai projet concret à présenter en entretien plutôt qu'une simple liste de certifications.
+Je suis étudiant en cycle ingénieur, actuellement sur le module 2 du parcours CCNA de Cisco NetAcad, avec l'objectif de terminer le module 3 et de passer l'examen CCNA, puis CompTIA Security+. Ce homelab est pensé pour grandir avec ma formation, et pour me donner un vrai projet concret à présenter en entretien plutôt qu'une simple liste de certifications.
 
 Ce que je voulais accomplir avec cette première phase :
 
@@ -14,7 +14,7 @@ Ce que je voulais accomplir avec cette première phase :
 - Mettre en place une supervision pour surveiller l'infrastructure (Zabbix)
 - Garder une trace précise de chaque étape, y compris des erreurs rencontrées en cours de route
 
-## 3 Ce qui a été utilisé
+## Outils utilisés
 
 - Cisco Packet Tracer, pour la partie VLAN, routage inter-VLAN, DHCP et ACL
 - VirtualBox, comme hyperviseur pour pfSense et Zabbix
@@ -22,16 +22,17 @@ Ce que je voulais accomplir avec cette première phase :
 - Zabbix 7.0 LTS, pour la supervision réseau via SNMP
 - GNS3, installé et fonctionnel, prévu pour une prochaine extension du lab
 
-## 4 Topologie
+## Topologie
 
 **Partie VLAN, sous Packet Tracer**
 
 Trois PC sont connectés à un switch, chacun sur un VLAN différent. Le switch est relié au routeur par un lien trunk en 802.1Q, et c'est le routeur qui gère le routage entre les trois réseaux :
 
-PC0 (VLAN 10, ADMIN) → Switch SW-CNNA2
-PC1 (VLAN 20, RH) → Switch SW-CNNA2
-PC2 (VLAN 30, INVITES) → Switch SW-CNNA2
-Switch SW-CNNA2 → trunk 802.1Q → Routeur R-CNNA2
+```
+PC0 (VLAN 10, ADMIN) ──┐
+PC1 (VLAN 20, RH)    ──┼── Switch SW-CNNA2 ── trunk 802.1Q ── Routeur R-CNNA2
+PC2 (VLAN 30, INVITES)─┘
+```
 
 Le VLAN 10 (ADMIN) utilise le réseau 192.168.10.0/24, avec 192.168.10.1 comme passerelle. Le VLAN 20 (RH) est sur 192.168.20.0/24, passerelle 192.168.20.1. Le VLAN 30 (INVITES) est sur 192.168.30.0/24, passerelle 192.168.30.1.
 
@@ -39,15 +40,17 @@ Le VLAN 10 (ADMIN) utilise le réseau 192.168.10.0/24, avec 192.168.10.1 comme p
 
 Mon PC et les deux VM partagent un réseau privé hôte en 192.168.56.0/24 :
 
-PC hôte → réseau Host-Only 192.168.56.0/24 → pfSense (LAN : 192.168.56.254)
-pfSense (WAN) → mode bridge sur Wi-Fi → accès Internet
-Zabbix (192.168.56.104) → supervise pfSense via SNMP
+```
+PC hôte ── Host-Only 192.168.56.0/24 ── pfSense (LAN : 192.168.56.254)
+pfSense (WAN) ── mode Bridge sur la carte Wi-Fi ── Internet
+Zabbix (192.168.56.104) ── supervise pfSense via SNMP
+```
 
-## 5 Ce qui a été réalisé
+## Ce qui a été réalisé
 
 J'ai créé et configuré trois VLAN sur un switch Cisco 2960-24TT, avec le routage inter-VLAN correspondant sur un routeur 2911, en passant par des sous-interfaces. J'ai ensuite ajouté un serveur DHCP pour chacun des trois VLAN, puis une liste de contrôle d'accès pour empêcher le VLAN Invités de communiquer avec le VLAN Admin.
 
-Côté sécurité et supervision, j'ai installé et sécurisé un pare-feu pfSense, avec une première règle de filtrage fonctionnelle, puis déployé Zabbix pour superviser pfSense en temps réel via SNMP. L'ensemble du processus est documenté dans le rapport complet, disponible dans le dossier `/docs`.
+Côté sécurité et supervision, j'ai installé et sécurisé un pare-feu pfSense, avec une première règle de filtrage fonctionnelle, puis déployé Zabbix pour superviser pfSense en temps réel via SNMP. L'ensemble du processus est documenté dans le [rapport complet](https://github.com/user-attachments/files/32176285/Rapport-Projet-Homelab-VLAN.pdf).
 
 ## Deux problèmes rencontrés, et comment je les ai résolus
 
@@ -55,9 +58,11 @@ Côté sécurité et supervision, j'ai installé et sécurisé un pare-feu pfSen
 
 **Un problème réseau pendant l'installation de pfSense.** L'installation échouait systématiquement, faute d'accès à Internet pour télécharger l'image du système. En testant un `ping 8.8.8.8` depuis le terminal de l'installeur, j'ai vu que c'était la passerelle NAT de VirtualBox elle-même qui renvoyait une erreur. Le problème s'est résolu en passant l'interface WAN du mode NAT au mode Bridge, directement sur ma carte Wi-Fi.
 
-Le détail complet de ces deux diagnostics se trouve dans le [rapport complet](docs/Rapport-Projet-Homelab-VLAN.pdf).
+Le détail complet de ces deux diagnostics se trouve dans le [rapport complet](https://github.com/user-attachments/files/32176285/Rapport-Projet-Homelab-VLAN.pdf).
 
-## 6 Captures d'écran : Les captures ci-dessous illustrent chacune de ces étapes, de la configuration initiale jusqu'aux tests de validation.
+## Captures d'écran
+
+Les captures ci-dessous illustrent chacune de ces étapes, de la configuration initiale jusqu'aux tests de validation.
 
 **Topologie réseau complète** — 3 PC répartis sur 3 VLAN, reliés à un switch, lui-même connecté au routeur via un lien trunk :
 <img width="2880" height="1702" alt="Capture d&#39;écran 2026-09-14 002829" src="https://github.com/user-attachments/assets/b5a9f1d0-9ef4-4227-ba1a-1c7e39eb1404" />
@@ -100,19 +105,19 @@ Le détail complet de ces deux diagnostics se trouve dans le [rapport complet](d
 
 
 
-## 7 Documentation complète
+## Documentation complète
 
 Le rapport détaillé, avec le contexte, les configurations complètes, les tests de validation et le déroulé du troubleshooting, est disponible ici :
 [Rapport-Projet-Homelab-VLAN.pdf](https://github.com/user-attachments/files/32176285/Rapport-Projet-Homelab-VLAN.pdf)
 
 
-## 8 Prochaines étapes
+## Prochaines étapes
 
 Je compte continuer ce projet dans les prochains mois, avec notamment :
 
 - Un système de détection d'intrusion (Suricata ou Snort) sur pfSense
 - Un accès distant sécurisé via VPN (OpenVPN)
 - Un dashboard Zabbix personnalisé avec des alertes automatiques
-- L'intégration d'un serveur Windows avec Active Directory, en lien avec la suite de ma formation CCNA3
+- L'intégration d'un serveur Windows avec Active Directory, en lien avec la suite de ma formation
 
 
