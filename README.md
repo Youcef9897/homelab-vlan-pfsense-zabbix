@@ -73,7 +73,7 @@ Les captures ci-dessous illustrent chacune de ces étapes, de la configuration i
 <img width="1400" height="1398" alt="Capture d&#39;écran 2026-09-14 003623" src="https://github.com/user-attachments/assets/5c94b34f-740e-4675-adce-9528750336bc" />
 
 
-**Test de connectivité inter-VLAN** — ping réussi entre deux PC de VLAN différents, preuve que le routage inter-VLAN fonctionne correctement : 
+**Test de connectivité inter-VLAN** — ping réussi entre deux PC de VLAN différents, preuve que le routage inter-VLAN fonctionne correctement :
 <img width="2880" height="1700" alt="Capture d&#39;écran 2026-09-14 023131" src="https://github.com/user-attachments/assets/725812a8-b96c-4abb-b70c-6b58d69c6ee6" />
 
 
@@ -81,12 +81,12 @@ Les captures ci-dessous illustrent chacune de ces étapes, de la configuration i
 <img width="2774" height="668" alt="Capture d&#39;écran 2026-09-14 023244" src="https://github.com/user-attachments/assets/a7ea6472-c1b3-48c0-8239-4fb9c1e4d437" />
 
 
-**Vérification de l'ACL de sécurité** — le PC du VLAN Invités ne peut plus joindre le PC du VLAN Admin ("Destination host unreachable"), preuve que la règle de pare-feu fonctionne comme prévu :
+**Vérification de l'ACL de sécurité** — le PC du VLAN Invités ne peut plus joindre le PC du VLAN Admin ("Destination host unreachable"), preuve que l'ACL fonctionne comme prévu :
 <img width="2878" height="872" alt="Capture d&#39;écran 2026-09-14 025100" src="https://github.com/user-attachments/assets/3d63bd49-95fe-4261-ad49-f1c278969761" />
 
 
 
-**Interface pfSense — Dashboard** — vue d'ensemble du pare-feu une fois installé et configuré (interfaces WAN/LAN, état du système) :
+**Interface pfSense — tableau de bord** — vue d'ensemble du pare-feu une fois installé et configuré (interfaces WAN/LAN, état du système) :
 <img width="1370" height="1614" alt="Capture d&#39;écran 2026-09-13 200406" src="https://github.com/user-attachments/assets/3ca5becd-1257-41ed-a440-bcb91925c085" />
 
 
@@ -99,7 +99,7 @@ Les captures ci-dessous illustrent chacune de ces étapes, de la configuration i
 <img width="2798" height="1598" alt="Capture d&#39;écran 2026-09-13 231356" src="https://github.com/user-attachments/assets/0f2f6024-39af-412d-8ece-4791066c1ea9" />
 
 
-**Supervision Zabbix — métriques en temps réel** — données remontées automatiquement par Zabbix (disponibilité, temps de réponse, uptime), preuve que le monitoring collecte des données réelles :
+**Supervision Zabbix — métriques en temps réel** — données remontées automatiquement par Zabbix (disponibilité, temps de réponse, durée de fonctionnement), preuve que la supervision collecte des données réelles :
 <img width="2792" height="1606" alt="Capture d&#39;écran 2026-09-13 231734" src="https://github.com/user-attachments/assets/08c3a14c-6e92-4799-b355-80e3a2eb0fc9" />
 
 
@@ -107,7 +107,7 @@ Les captures ci-dessous illustrent chacune de ces étapes, de la configuration i
 
 ## Documentation complète
 
-Le rapport détaillé, avec le contexte, les configurations complètes, les tests de validation et le déroulé du troubleshooting, est disponible ici :
+Le rapport détaillé, avec le contexte, les configurations complètes, les tests de validation et le déroulé du dépannage, est disponible ici :
 [Rapport-Projet-Homelab-VLAN.pdf](https://github.com/user-attachments/files/32176285/Rapport-Projet-Homelab-VLAN.pdf)
 
 
