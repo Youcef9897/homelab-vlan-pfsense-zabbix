@@ -1,23 +1,25 @@
 # Tests de connectivité et supervision
 
+**Navigation :** [Accueil](../README.md) · [Partie A](partie-a-vlan.md) · [Partie B](partie-b-pfsense-zabbix.md) · [Adressage](plan-adressage.md) · [Règles pfSense](regles-pfsense.md) · Tests et supervision · [Problèmes résolus](problemes-resolus.md) · [Feuille de route](feuille-de-route.md)
+
 ## Tests réalisés
 
 ### Partie A — VLAN (Packet Tracer)
 
 | Test | Commande ou action | Résultat attendu | Résultat obtenu | Statut |
 |---|---|---|---|---|
-| Affectation des ports aux VLAN | `show vlan brief` | Chaque port dans son VLAN | Conforme (capture du README) | Réalisé |
-| Transport des VLAN sur le trunk | `show interfaces trunk` | Les trois VLAN transportés vers le routeur | Conforme (capture du README) | Réalisé |
-| Routage inter-VLAN | `ping` entre deux PC de VLAN différents | Réponse reçue | Ping réussi (capture du README) | Réalisé |
-| Table de routage | `show ip route` sur le routeur | Trois réseaux directement connectés (code C) | Conforme (capture du README) | Réalisé |
-| ACL Invités vers Admin | `ping` du VLAN 30 vers le VLAN 10 | Pas de réponse | « Destination host unreachable » (capture du README) | Réalisé |
+| Affectation des ports aux VLAN | `show vlan brief` | Chaque port dans son VLAN | Conforme (capture de la page Partie A) | Réalisé |
+| Transport des VLAN sur le trunk | `show interfaces trunk` | Les trois VLAN transportés vers le routeur | Conforme (capture de la page Partie A) | Réalisé |
+| Routage inter-VLAN | `ping` entre deux PC de VLAN différents | Réponse reçue | Ping réussi (capture de la page Partie A) | Réalisé |
+| Table de routage | `show ip route` sur le routeur | Trois réseaux directement connectés (code C) | Conforme (capture de la page Partie A) | Réalisé |
+| ACL Invités vers Admin | `ping` du VLAN 30 vers le VLAN 10 | Pas de réponse | « Destination host unreachable » (capture de la page Partie A) | Réalisé |
 
 ### Partie B — pfSense et Zabbix (VirtualBox)
 
 | Test | Commande ou action | Résultat attendu | Résultat obtenu | Statut |
 |---|---|---|---|---|
 | Accès à l'interface web de pfSense | Ouvrir http://192.168.56.254 depuis le PC hôte | Page de connexion | Accessible | Réalisé |
-| Supervision SNMP | Hôte pfSense dans Zabbix | Disponibilité en vert | En vert, métriques en direct (captures du README) | Réalisé |
+| Supervision SNMP | Hôte pfSense dans Zabbix | Disponibilité en vert | En vert, métriques en direct (captures de la page Partie B) | Réalisé |
 | Règle de blocage ICMP | `ping` depuis le LAN avant puis après la règle | Réponse avant, aucune réponse après | **À documenter** | À faire |
 | Sortie vers Internet | Page web ou `ping 8.8.8.8` depuis une machine du LAN | Accès fonctionnel | **À documenter** | À faire |
 | Résolution DNS | `nslookup` depuis une machine du LAN | Nom résolu | **À documenter** | À faire |

@@ -1,10 +1,12 @@
 # Règles de filtrage pfSense
 
+**Navigation :** [Accueil](../README.md) · [Partie A](partie-a-vlan.md) · [Partie B](partie-b-pfsense-zabbix.md) · [Adressage](plan-adressage.md) · Règles pfSense · [Tests et supervision](tests-et-supervision.md) · [Problèmes résolus](problemes-resolus.md) · [Feuille de route](feuille-de-route.md)
+
 ## Règle en place
 
 | # | Interface | Action | Protocole | Source | Destination | Objectif | Statut |
 |---|---|---|---|---|---|---|---|
-| 1 | LAN | Bloquer | ICMP | Tous | Tous | Règle de test pour valider le fonctionnement du filtrage | Appliquée (voir la capture « Règle de pare-feu créée sur pfSense » dans le README) |
+| 1 | LAN | Bloquer | ICMP | Tous | Tous | Règle de test pour valider le fonctionnement du filtrage | Appliquée (voir la capture « Règle de pare-feu créée sur pfSense » dans la page Partie B) |
 
 **À documenter** : le résultat du test, c'est-à-dire un `ping` depuis une machine du LAN avant l'application de la règle (réponse reçue) et après (aucune réponse). Une capture de chaque cas suffit.
 
