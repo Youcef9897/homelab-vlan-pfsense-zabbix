@@ -14,6 +14,15 @@ Ce que je voulais accomplir avec cette première phase :
 - Mettre en place une supervision pour surveiller l'infrastructure (Zabbix)
 - Garder une trace précise de chaque étape, y compris des erreurs rencontrées en cours de route
 
+## Architecture actuelle : deux parties indépendantes
+
+Le lab est aujourd'hui composé de **deux parties qui ne sont pas encore reliées entre elles** :
+
+- **Partie A, sous Packet Tracer** : trois VLAN, un routage inter-VLAN, du DHCP et une ACL, sur du matériel Cisco simulé.
+- **Partie B, sous VirtualBox** : un pare-feu pfSense et un serveur de supervision Zabbix, sur un réseau privé hôte.
+
+Les réseaux de la partie A (192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24) ne passent pas par pfSense, et la partie B (192.168.56.0/24) ne voit pas les VLAN. Relier les deux parties fait partie de l'étape 1 de la feuille de route ci-dessous.
+
 ## Outils utilisés
 
 - Cisco Packet Tracer, pour la partie VLAN, routage inter-VLAN, DHCP et ACL
@@ -24,7 +33,7 @@ Ce que je voulais accomplir avec cette première phase :
 
 ## Topologie
 
-**Partie VLAN, sous Packet Tracer**
+**Partie A — VLAN, sous Packet Tracer**
 
 Trois PC sont connectés à un switch, chacun sur un VLAN différent. Le switch est relié au routeur par un lien trunk en 802.1Q, et c'est le routeur qui gère le routage entre les trois réseaux :
 
@@ -34,9 +43,7 @@ PC1 (VLAN 20, RH)    ──┼── Switch SW-CNNA2 ── trunk 802.1Q ── 
 PC2 (VLAN 30, INVITES)─┘
 ```
 
-Le VLAN 10 (ADMIN) utilise le réseau 192.168.10.0/24, avec 192.168.10.1 comme passerelle. Le VLAN 20 (RH) est sur 192.168.20.0/24, passerelle 192.168.20.1. Le VLAN 30 (INVITES) est sur 192.168.30.0/24, passerelle 192.168.30.1.
-
-**Partie pfSense et Zabbix, sous VirtualBox**
+**Partie B — pfSense et Zabbix, sous VirtualBox**
 
 Mon PC et les deux VM partagent un réseau privé hôte en 192.168.56.0/24 :
 
@@ -46,11 +53,36 @@ pfSense (WAN) ── mode Bridge sur la carte Wi-Fi ── Internet
 Zabbix (192.168.56.104) ── supervise pfSense via SNMP
 ```
 
+## Plan d'adressage
+
+| Partie | Réseau | Passerelle | Rôle |
+|---|---|---|---|
+| A | VLAN 10 (ADMIN) — 192.168.10.0/24 | 192.168.10.1 | Administration |
+| A | VLAN 20 (RH) — 192.168.20.0/24 | 192.168.20.1 | Ressources humaines |
+| A | VLAN 30 (INVITES) — 192.168.30.0/24 | 192.168.30.1 | Invités, isolés du VLAN Admin par une ACL |
+| B | Host-Only — 192.168.56.0/24 | 192.168.56.254 (pfSense) | PC hôte, pfSense (LAN), Zabbix (192.168.56.104) |
+
+Le détail (interfaces WAN et LAN, DHCP, choix du mode Bridge) est dans [docs/plan-adressage.md](docs/plan-adressage.md).
+
 ## Ce qui a été réalisé
 
 J'ai créé et configuré trois VLAN sur un switch Cisco 2960-24TT, avec le routage inter-VLAN correspondant sur un routeur 2911, en passant par des sous-interfaces. J'ai ensuite ajouté un serveur DHCP pour chacun des trois VLAN, puis une liste de contrôle d'accès pour empêcher le VLAN Invités de communiquer avec le VLAN Admin.
 
 Côté sécurité et supervision, j'ai installé et sécurisé un pare-feu pfSense, avec une première règle de filtrage fonctionnelle, puis déployé Zabbix pour superviser pfSense en temps réel via SNMP. L'ensemble du processus est documenté dans le [rapport complet](https://github.com/user-attachments/files/32176285/Rapport-Projet-Homelab-VLAN.pdf).
+
+## Où en est le projet
+
+| Élément | État |
+|---|---|
+| VLAN, routage inter-VLAN, DHCP et ACL (Packet Tracer) | Réalisé et testé |
+| Installation et sécurisation de pfSense | Réalisé |
+| Supervision de pfSense par Zabbix via SNMP | Réalisé |
+| Règles de filtrage pfSense | En cours : une seule règle de test (blocage de l'ICMP), voir [docs/regles-pfsense.md](docs/regles-pfsense.md) |
+| Tests de connectivité côté pfSense | À faire, voir [docs/tests-et-supervision.md](docs/tests-et-supervision.md) |
+| Graphiques et alertes Zabbix | À faire |
+| Plan d'adressage complet (plages DHCP) | En cours |
+| Configurations exportées dans le dépôt | À faire |
+| Liaison entre la partie A et la partie B | À faire |
 
 ## Deux problèmes rencontrés, et comment je les ai résolus
 
@@ -65,59 +97,75 @@ Le détail complet de ces deux diagnostics se trouve dans le [rapport complet](h
 Les captures ci-dessous illustrent chacune de ces étapes, de la configuration initiale jusqu'aux tests de validation.
 
 **Topologie réseau complète** — 3 PC répartis sur 3 VLAN, reliés à un switch, lui-même connecté au routeur via un lien trunk :
-<img width="2880" height="1702" alt="Capture d&#39;écran 2026-09-14 002829" src="https://github.com/user-attachments/assets/b5a9f1d0-9ef4-4227-ba1a-1c7e39eb1404" />
 
-
+<img width="2880" height="1702" alt="Topologie Packet Tracer : trois PC sur trois VLAN reliés à un switch, lui-même relié au routeur par un lien trunk" src="https://github.com/user-attachments/assets/b5a9f1d0-9ef4-4227-ba1a-1c7e39eb1404" />
 
 **Vérification des VLAN et du trunk** — commandes `show vlan brief` et `show interfaces trunk` confirmant que chaque port est bien assigné à son VLAN, et que le lien vers le routeur transporte bien les 3 VLAN :
-<img width="1400" height="1398" alt="Capture d&#39;écran 2026-09-14 003623" src="https://github.com/user-attachments/assets/5c94b34f-740e-4675-adce-9528750336bc" />
 
+<img width="1400" height="1398" alt="Sortie des commandes show vlan brief et show interfaces trunk sur le switch" src="https://github.com/user-attachments/assets/5c94b34f-740e-4675-adce-9528750336bc" />
 
 **Test de connectivité inter-VLAN** — ping réussi entre deux PC de VLAN différents, preuve que le routage inter-VLAN fonctionne correctement :
-<img width="2880" height="1700" alt="Capture d&#39;écran 2026-09-14 023131" src="https://github.com/user-attachments/assets/725812a8-b96c-4abb-b70c-6b58d69c6ee6" />
 
+<img width="2880" height="1700" alt="Ping réussi entre deux PC situés dans des VLAN différents" src="https://github.com/user-attachments/assets/725812a8-b96c-4abb-b70c-6b58d69c6ee6" />
 
 **Table de routage du routeur** — commande `show ip route`, les 3 réseaux apparaissent comme directement connectés (code C), confirmant que le routeur gère bien les 3 VLAN :
-<img width="2774" height="668" alt="Capture d&#39;écran 2026-09-14 023244" src="https://github.com/user-attachments/assets/a7ea6472-c1b3-48c0-8239-4fb9c1e4d437" />
 
+<img width="2774" height="668" alt="Sortie de show ip route : les trois réseaux VLAN apparaissent comme directement connectés" src="https://github.com/user-attachments/assets/a7ea6472-c1b3-48c0-8239-4fb9c1e4d437" />
 
 **Vérification de l'ACL de sécurité** — le PC du VLAN Invités ne peut plus joindre le PC du VLAN Admin ("Destination host unreachable"), preuve que l'ACL fonctionne comme prévu :
-<img width="2878" height="872" alt="Capture d&#39;écran 2026-09-14 025100" src="https://github.com/user-attachments/assets/3d63bd49-95fe-4261-ad49-f1c278969761" />
 
-
+<img width="2878" height="872" alt="Ping depuis le VLAN Invités vers le VLAN Admin bloqué par l'ACL : Destination host unreachable" src="https://github.com/user-attachments/assets/3d63bd49-95fe-4261-ad49-f1c278969761" />
 
 **Interface pfSense — tableau de bord** — vue d'ensemble du pare-feu une fois installé et configuré (interfaces WAN/LAN, état du système) :
-<img width="1370" height="1614" alt="Capture d&#39;écran 2026-09-13 200406" src="https://github.com/user-attachments/assets/3ca5becd-1257-41ed-a440-bcb91925c085" />
 
+<img width="1370" height="1614" alt="Tableau de bord pfSense avec les interfaces WAN et LAN et l'état du système" src="https://github.com/user-attachments/assets/3ca5becd-1257-41ed-a440-bcb91925c085" />
 
 **Règle de pare-feu créée sur pfSense** — règle de test bloquant le trafic ICMP sur l'interface LAN, appliquée avec succès :
-<img width="1334" height="1476" alt="Capture d&#39;écran 2026-09-13 205807" src="https://github.com/user-attachments/assets/b176a4ce-ee0c-43d1-8557-62c2de301eab" />
 
-
+<img width="1334" height="1476" alt="Règle pfSense de test bloquant le trafic ICMP sur l'interface LAN" src="https://github.com/user-attachments/assets/b176a4ce-ee0c-43d1-8557-62c2de301eab" />
 
 **Supervision Zabbix — état de l'hôte pfSense** — pfSense apparaît disponible en SNMP (statut vert), confirmant que la supervision fonctionne :
-<img width="2798" height="1598" alt="Capture d&#39;écran 2026-09-13 231356" src="https://github.com/user-attachments/assets/0f2f6024-39af-412d-8ece-4791066c1ea9" />
 
+<img width="2798" height="1598" alt="Zabbix : l'hôte pfSense est disponible en SNMP (statut vert)" src="https://github.com/user-attachments/assets/0f2f6024-39af-412d-8ece-4791066c1ea9" />
 
 **Supervision Zabbix — métriques en temps réel** — données remontées automatiquement par Zabbix (disponibilité, temps de réponse, durée de fonctionnement), preuve que la supervision collecte des données réelles :
-<img width="2792" height="1606" alt="Capture d&#39;écran 2026-09-13 231734" src="https://github.com/user-attachments/assets/08c3a14c-6e92-4799-b355-80e3a2eb0fc9" />
 
+<img width="2792" height="1606" alt="Zabbix : métriques de pfSense remontées en temps réel (disponibilité, temps de réponse, durée de fonctionnement)" src="https://github.com/user-attachments/assets/08c3a14c-6e92-4799-b355-80e3a2eb0fc9" />
 
+## Documentation
 
+- [Rapport complet (PDF)](https://github.com/user-attachments/files/32176285/Rapport-Projet-Homelab-VLAN.pdf) : contexte, configurations complètes, tests de validation et déroulé du dépannage
+- [docs/plan-adressage.md](docs/plan-adressage.md) : adressage IP, interfaces WAN et LAN, DHCP
+- [docs/regles-pfsense.md](docs/regles-pfsense.md) : règles de filtrage pfSense, en place et prévues
+- [docs/tests-et-supervision.md](docs/tests-et-supervision.md) : tests de connectivité et supervision Zabbix
 
-## Documentation complète
+## Feuille de route
 
-Le rapport détaillé, avec le contexte, les configurations complètes, les tests de validation et le déroulé du dépannage, est disponible ici :
-[Rapport-Projet-Homelab-VLAN.pdf](https://github.com/user-attachments/files/32176285/Rapport-Projet-Homelab-VLAN.pdf)
+Le projet suit un fil conducteur : **réseaux, puis systèmes, puis supervision, puis sécurité**.
 
+**Étape 1 — Finaliser l'infrastructure réseau (en cours)**
 
-## Prochaines étapes
+- Réaliser un schéma réseau unique
+- Compléter le plan d'adressage et documenter les interfaces WAN et LAN
+- Documenter les règles de filtrage pfSense et les tester
+- Réaliser et documenter des tests de connectivité côté pfSense
+- Ajouter des graphiques et des alertes automatiques dans Zabbix
+- Exporter les configurations (sans aucun secret) dans le dépôt
+- Relier la partie A (VLAN) et la partie B (pfSense, Zabbix), par exemple en reproduisant les VLAN derrière pfSense dans GNS3
 
-Je compte continuer ce projet dans les prochains mois, avec notamment :
+**Étape 2 — Ajouter des systèmes**
+
+- Un serveur Windows avec Active Directory (comptes, permissions, services réseau), en lien avec la suite de ma formation
+- Un client Windows
+- Un serveur Linux et son administration
+- Tous placés derrière pfSense pour que le lab reste un seul ensemble
+
+**Étape 3 — Ajouter une dimension cybersécurité**
+
+- Un outil de collecte et d'analyse des événements de sécurité, comme Wazuh
+- Des scénarios de test dans le lab, avec observation et documentation des événements collectés
+
+**Pistes optionnelles**
 
 - Un système de détection d'intrusion (Suricata ou Snort) sur pfSense
 - Un accès distant sécurisé via VPN (OpenVPN)
-- Un dashboard Zabbix personnalisé avec des alertes automatiques
-- L'intégration d'un serveur Windows avec Active Directory, en lien avec la suite de ma formation
-
-
