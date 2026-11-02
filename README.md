@@ -46,7 +46,7 @@ Le rapport détaillé, avec le contexte, les configurations complètes, les test
 <details>
 <summary>Contexte et objectifs</summary>
 
-Je suis étudiant en cycle ingénieur, actuellement sur le module 2 du parcours CCNA de Cisco NetAcad (« Switching, Routing and Wireless Essentials »), avec l'objectif de terminer le module 3 et de passer l'examen CCNA, puis CompTIA Security+. Ce homelab est pensé pour grandir avec ma formation, et pour me donner un vrai projet concret à présenter en entretien plutôt qu'une simple liste de certifications.
+Je suis étudiant en cycle ingénieur et je suis le parcours CCNA de Cisco NetAcad, avec l'objectif de passer l'examen CCNA, puis CompTIA Security+. Ce homelab est pensé pour grandir avec ma formation, et pour me donner un vrai projet concret à présenter en entretien plutôt qu'une simple liste de certifications.
 
 Ce que je voulais accomplir avec cette première phase :
 
