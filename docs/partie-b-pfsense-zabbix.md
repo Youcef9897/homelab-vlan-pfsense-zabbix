@@ -2,7 +2,7 @@
 
 **Navigation :** [Accueil](../README.md) · [Partie A](partie-a-vlan.md) · Partie B · [Adressage](plan-adressage.md) · [Règles pfSense](regles-pfsense.md) · [Tests et supervision](tests-et-supervision.md) · [Problèmes résolus](problemes-resolus.md) · [Feuille de route](feuille-de-route.md)
 
-> **En bref** : un pare-feu pfSense installé et sécurisé dans une VM VirtualBox, avec une première règle de filtrage, et un serveur Zabbix qui le supervise en temps réel via SNMP.
+> **En bref** : un pare-feu pfSense installé et sécurisé dans une VM VirtualBox, avec des règles de filtrage testées et journalisées, et un serveur Zabbix qui le supervise via SNMP (tableau de bord et alerte de disponibilité).
 
 ## Topologie
 
@@ -33,9 +33,7 @@ Le détail des interfaces et des adresses est dans la page [Adressage](plan-adre
 
 <img width="1370" height="1614" alt="Tableau de bord pfSense avec les interfaces WAN et LAN et l'état du système" src="https://github.com/user-attachments/assets/3ca5becd-1257-41ed-a440-bcb91925c085" />
 
-**Règle de pare-feu créée sur pfSense** — règle de test bloquant le trafic ICMP sur l'interface LAN, appliquée avec succès :
-
-<img width="1334" height="1476" alt="Règle pfSense de test bloquant le trafic ICMP sur l'interface LAN" src="https://github.com/user-attachments/assets/b176a4ce-ee0c-43d1-8557-62c2de301eab" />
+**Règles de pare-feu** — les règles finales du LAN (Telnet/SMTP bloqués, ping encadré) sont détaillées, avec leurs tests, dans [Règles pfSense](regles-pfsense.md).
 
 **Supervision Zabbix — état de l'hôte pfSense** — pfSense apparaît disponible en SNMP (statut vert), confirmant que la supervision fonctionne :
 
@@ -47,5 +45,5 @@ Le détail des interfaces et des adresses est dans la page [Adressage](plan-adre
 
 ## Pour aller plus loin
 
-- Les tests réalisés et ceux à faire sont dans [Tests et supervision](tests-et-supervision.md), avec le plan des graphiques et des alertes Zabbix.
+- Les tests réalisés et ceux à faire sont dans [Tests et supervision](tests-et-supervision.md), avec le tableau de bord et l'alerte Zabbix.
 - Cette partie n'est pas encore reliée à la [Partie A](partie-a-vlan.md) : c'est un objectif de l'étape 1 de la [feuille de route](feuille-de-route.md).

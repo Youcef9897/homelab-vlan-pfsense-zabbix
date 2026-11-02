@@ -19,23 +19,7 @@ Projet personnel mené en parallèle de ma formation Cisco NetAcad (parcours CCN
 
 ![Schéma d'ensemble des deux parties du lab](docs/img/schema-homelab.png)
 
-Le lab est composé de **deux parties qui ne sont pas encore reliées entre elles**. Les relier est l'un des objectifs de l'étape 1 de la [feuille de route](docs/feuille-de-route.md).
-
-```mermaid
-flowchart LR
-  subgraph A["Partie A — Packet Tracer"]
-    PC0["PC0 — VLAN 10 ADMIN"] --- SW["Switch SW-CNNA2"]
-    PC1["PC1 — VLAN 20 RH"] --- SW
-    PC2["PC2 — VLAN 30 INVITES"] --- SW
-    SW ---|"trunk 802.1Q"| R["Routeur R-CNNA2"]
-  end
-  subgraph B["Partie B — VirtualBox"]
-    HOST["PC hôte"] --- HO["Réseau Host-Only 192.168.56.0/24"]
-    ZBX["Zabbix — 192.168.56.104"] --- HO
-    HO --- PF["pfSense — LAN 192.168.56.254"]
-    PF ---|"WAN en Bridge sur le Wi-Fi"| NET(("Internet"))
-  end
-```
+Le lab est composé de **deux parties qui ne sont pas encore reliées entre elles**. Les relier est le prochain objectif, décrit dans la [feuille de route](docs/feuille-de-route.md).
 
 ## Où en est le projet
 
@@ -52,6 +36,7 @@ flowchart LR
 | Configurations exportées sans secret ([`configs/`](configs/)) | Réalisé |
 | Ping de Zabbix vers Internet | Constaté, cause non confirmée (voir [Problèmes](docs/problemes-resolus.md)) |
 | Alerte sur la charge CPU | Non faite dans cette version |
+| Test de résolution DNS depuis le LAN | À faire |
 | Liaison entre la partie A et la partie B | À faire |
 
 ## Rapport complet

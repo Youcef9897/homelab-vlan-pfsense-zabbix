@@ -2,7 +2,7 @@
 
 **Navigation :** [Accueil](../README.md) · [Partie A](partie-a-vlan.md) · [Partie B](partie-b-pfsense-zabbix.md) · Adressage · [Règles pfSense](regles-pfsense.md) · [Tests et supervision](tests-et-supervision.md) · [Problèmes résolus](problemes-resolus.md) · [Feuille de route](feuille-de-route.md)
 
-Ce document détaille l'adressage IP des deux parties du lab. Les cellules marquées **À compléter** attendent une valeur que seul le lab permet de relever.
+Ce document détaille l'adressage IP des deux parties du lab. Les valeurs viennent des configurations réelles du lab (voir [`configs/`](../configs/)).
 
 ## Partie A — VLAN (Packet Tracer)
 
