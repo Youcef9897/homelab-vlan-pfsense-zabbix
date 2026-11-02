@@ -6,17 +6,18 @@ Ce document détaille l'adressage IP des deux parties du lab. Les cellules marqu
 
 ## Partie A — VLAN (Packet Tracer)
 
-Matériel simulé : switch Cisco 2960-24TT (SW-CNNA2) et routeur Cisco 2911 (R-CNNA2). Le switch est relié au routeur par un lien trunk 802.1Q sur le port Gi0/1. Le routeur assure le routage inter-VLAN avec une sous-interface par VLAN (router-on-a-stick).
+Matériel simulé : switch Cisco 2960-24TT (SW-CNNA2) et routeur Cisco 2901 (R-CNNA2). Le switch est relié au routeur par un lien trunk 802.1Q sur le port Gi0/1. Le routeur assure le routage inter-VLAN avec une sous-interface par VLAN (router-on-a-stick).
 
 | VLAN | Nom | Réseau | Passerelle (sous-interface du routeur) | DHCP | Plage distribuée |
 |---|---|---|---|---|---|
-| 10 | ADMIN | 192.168.10.0/24 | 192.168.10.1 | Oui | **À compléter** |
-| 20 | RH | 192.168.20.0/24 | 192.168.20.1 | Oui | **À compléter** |
-| 30 | INVITES | 192.168.30.0/24 | 192.168.30.1 | Oui | **À compléter** |
+| 10 | ADMIN | 192.168.10.0/24 | 192.168.10.1 | Oui | 192.168.10.21 à .254 (.1 à .20 exclues) |
+| 20 | RH | 192.168.20.0/24 | 192.168.20.1 | Oui | 192.168.20.21 à .254 (.1 à .20 exclues) |
+| 30 | INVITES | 192.168.30.0/24 | 192.168.30.1 | Oui | 192.168.30.21 à .254 (.1 à .20 exclues) |
+| 99 | NATIF | (aucun) | (aucune) | Non | VLAN natif du trunk et ports inutilisés |
 
 Politique de sécurité : une ACL empêche le VLAN 30 (INVITES) de communiquer avec le VLAN 10 (ADMIN).
 
-Pour compléter les plages DHCP, relever la configuration du routeur avec `show running-config` et reprendre les lignes `ip dhcp pool` et `ip dhcp excluded-address`.
+Le switch est administrable sur 192.168.10.2 (interface Vlan10, passerelle 192.168.10.1). Les configurations complètes, sans secret, sont dans [`configs/`](../configs/). Le serveur DNS distribué est 8.8.8.8.
 
 ## Partie B — pfSense et Zabbix (VirtualBox)
 
@@ -27,7 +28,7 @@ Pour compléter les plages DHCP, relever la configuration du routeur avec `show 
 | Zabbix | LAN | 192.168.56.104 | Réseau privé hôte (Host-Only) | Supervision de pfSense via SNMP |
 | PC hôte | Host-Only | 192.168.56.x | Réseau privé hôte (Host-Only) | Administration (interface web de pfSense sur http://192.168.56.254) |
 
-Plage DHCP du LAN pfSense : **À compléter** (Services > DHCP Server > LAN).
+Serveur DHCP du LAN pfSense : activé, plage **192.168.56.100 à 192.168.56.150**, passerelle et DNS 192.168.56.254, bail par défaut 7200 s. L'adresse 192.168.56.104 de Zabbix est un bail dans cette plage, sans réservation pour l'instant. Le serveur DHCP du réseau Host-Only de VirtualBox est désactivé.
 
 ## Interface WAN de pfSense
 
@@ -41,6 +42,7 @@ Le LAN est aligné sur le réseau Host-Only de VirtualBox (192.168.56.0/24), pou
 
 ## À compléter
 
-- [ ] Plages DHCP des trois VLAN (partie A)
-- [ ] Plage DHCP du LAN pfSense (partie B)
-- [ ] Schéma unique regroupant les deux parties
+- [x] Plages DHCP des trois VLAN (partie A)
+- [x] Plage DHCP du LAN pfSense (partie B)
+- [ ] Réserver l'adresse de Zabbix (DHCP Static Mapping)
+- [x] Schéma regroupant les deux parties (`docs/img/schema-homelab.png`)

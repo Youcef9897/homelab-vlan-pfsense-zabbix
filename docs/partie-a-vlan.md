@@ -2,7 +2,7 @@
 
 **Navigation :** [Accueil](../README.md) · Partie A · [Partie B](partie-b-pfsense-zabbix.md) · [Adressage](plan-adressage.md) · [Règles pfSense](regles-pfsense.md) · [Tests et supervision](tests-et-supervision.md) · [Problèmes résolus](problemes-resolus.md) · [Feuille de route](feuille-de-route.md)
 
-> **En bref** : trois VLAN sur un switch Cisco 2960-24TT, un routage inter-VLAN assuré par un routeur 2911 (router-on-a-stick), un serveur DHCP par VLAN, et une ACL qui isole le VLAN Invités du VLAN Admin.
+> **En bref** : trois VLAN sur un switch Cisco 2960-24TT, un routage inter-VLAN assuré par un routeur 2901 (router-on-a-stick), un serveur DHCP par VLAN, et une ACL qui isole le VLAN Invités du VLAN Admin.
 
 ## Topologie
 
@@ -24,7 +24,7 @@ Les adresses de chaque VLAN sont dans la page [Adressage](plan-adressage.md).
 
 1. **Créer les trois VLAN** sur le switch Cisco 2960-24TT (10 ADMIN, 20 RH, 30 INVITES) et affecter les ports des PC.
 2. **Configurer le lien trunk 802.1Q** vers le routeur, sur le port Gi0/1.
-3. **Configurer le routage inter-VLAN** sur le routeur 2911, avec une sous-interface par VLAN. Chaque sous-interface sert de passerelle à son VLAN.
+3. **Configurer le routage inter-VLAN** sur le routeur 2901, avec une sous-interface par VLAN. Chaque sous-interface sert de passerelle à son VLAN.
 4. **Ajouter un serveur DHCP** pour chacun des trois VLAN.
 5. **Ajouter une ACL** pour empêcher le VLAN Invités de communiquer avec le VLAN Admin.
 6. **Valider l'ensemble** avec les vérifications ci-dessous.
@@ -47,8 +47,19 @@ Les adresses de chaque VLAN sont dans la page [Adressage](plan-adressage.md).
 
 <img width="2878" height="872" alt="Ping depuis le VLAN Invités vers le VLAN Admin bloqué par l'ACL : Destination host unreachable" src="https://github.com/user-attachments/assets/3d63bd49-95fe-4261-ad49-f1c278969761" />
 
+## Durcissement de l'administration
+
+- **SSH version 2 uniquement**, avec compte local ; Telnet désactivé (`transport input ssh`).
+- **Accès restreint au VLAN 10** : `access-list 10` appliquée sur les lignes vty. Un PC du VLAN 20 voit sa connexion SSH refusée (« Connection refused by remote host »).
+- **Ports inutilisés** du switch placés en VLAN 99 (natif) et coupés (`shutdown`) ; le trunk Gi0/1 autorise uniquement les VLAN 10, 20, 30 et 99.
+
+![PC0 : ping vers le VLAN 20 réussi, SSH vers le routeur accepté](img/00-pt-pc0-ping-ssh.jpg)
+
+![PC1 (VLAN 20) : SSH refusé](img/23-pt-pc1-ssh-refuse.jpg)
+
 ## Pour aller plus loin
 
 - La configuration complète est dans le [rapport PDF](https://github.com/user-attachments/files/32176285/Rapport-Projet-Homelab-VLAN.pdf).
 - Un problème de trunk rencontré pendant cette partie est détaillé dans [Problèmes résolus](problemes-resolus.md).
-- Prochaine amélioration prévue : exporter la configuration du switch et du routeur (`show running-config`) dans le dépôt. Voir la [feuille de route](feuille-de-route.md).
+- Les configurations du switch et du routeur (sans secret) sont dans [`configs/`](../configs/).
+- Les problèmes rencontrés (câbles inversés, mauvais modèle de switch…) sont dans [Problèmes résolus](problemes-resolus.md).

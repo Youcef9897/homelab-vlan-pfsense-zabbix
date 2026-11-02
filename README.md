@@ -17,6 +17,8 @@ Projet personnel mené en parallèle de ma formation Cisco NetAcad (parcours CCN
 
 ## Le projet en un coup d'œil
 
+![Schéma d'ensemble des deux parties du lab](docs/img/schema-homelab.png)
+
 Le lab est composé de **deux parties qui ne sont pas encore reliées entre elles**. Les relier est l'un des objectifs de l'étape 1 de la [feuille de route](docs/feuille-de-route.md).
 
 ```mermaid
@@ -42,16 +44,19 @@ flowchart LR
 | VLAN, routage inter-VLAN, DHCP et ACL (Packet Tracer) | Réalisé et testé |
 | Installation et sécurisation de pfSense | Réalisé |
 | Supervision de pfSense par Zabbix via SNMP | Réalisé |
-| [Règles de filtrage pfSense](docs/regles-pfsense.md) | En cours : une seule règle de test (blocage de l'ICMP) |
-| [Tests de connectivité côté pfSense](docs/tests-et-supervision.md) | À faire |
-| Graphiques et alertes Zabbix | À faire |
-| [Plan d'adressage complet](docs/plan-adressage.md) (plages DHCP) | En cours |
-| Configurations exportées dans le dépôt | À faire |
+| Durcissement du switch et du routeur (SSH restreint au VLAN 10, ports inutilisés coupés) | Réalisé et testé |
+| [Règles de filtrage pfSense](docs/regles-pfsense.md) (Telnet/SMTP bloqués, ping encadré, journalisation) | Réalisé et testé |
+| SNMP durci (chaîne personnalisée, écoute limitée au LAN) | Réalisé |
+| [Tests](docs/tests-et-supervision.md), tableau de bord et alerte Zabbix (PROBLEM puis RESOLVED) | Réalisé |
+| [Plan d'adressage](docs/plan-adressage.md) | Réalisé (réservation DHCP de Zabbix à faire) |
+| Configurations exportées sans secret ([`configs/`](configs/)) | Réalisé |
+| Ping de Zabbix vers Internet | Constaté, cause non confirmée (voir [Problèmes](docs/problemes-resolus.md)) |
+| Alerte sur la charge CPU | Non faite dans cette version |
 | Liaison entre la partie A et la partie B | À faire |
 
 ## Rapport complet
 
-Le rapport détaillé, avec le contexte, les configurations complètes, les tests de validation et le déroulé du dépannage, est disponible ici : [Rapport-Projet-Homelab-VLAN.pdf](https://github.com/user-attachments/files/32176285/Rapport-Projet-Homelab-VLAN.pdf)
+Le rapport détaillé, avec le contexte, les configurations complètes, les tests de validation et le déroulé du dépannage, est disponible ici : [rapport/rapport-homelab-v1.pdf](rapport/rapport-homelab-v1.pdf) (23 pages : architecture, configurations, tests, problèmes rencontrés)
 
 <details>
 <summary>Contexte et objectifs</summary>
