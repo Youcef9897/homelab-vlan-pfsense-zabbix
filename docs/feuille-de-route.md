@@ -11,12 +11,12 @@ Le projet suit un fil conducteur : **réseaux, puis systèmes, puis supervision,
 - [x] VLAN, routage inter-VLAN, DHCP et ACL (partie A)
 - [x] pfSense installé et sécurisé
 - [x] Zabbix installé, pfSense supervisé via SNMP
-- [ ] Réaliser un schéma réseau unique
-- [ ] Compléter le [plan d'adressage](plan-adressage.md) (plages DHCP)
-- [ ] Créer, tester et documenter les [règles pfSense](regles-pfsense.md)
-- [ ] Réaliser les tests de connectivité côté pfSense, voir [Tests et supervision](tests-et-supervision.md)
-- [ ] Ajouter des graphiques et des alertes dans Zabbix
-- [ ] Exporter les configurations (sans aucun secret) dans le dépôt
+- [x] Réaliser un schéma réseau unique
+- [x] Compléter le [plan d'adressage](plan-adressage.md) (plages DHCP des trois VLAN et du LAN pfSense)
+- [x] Créer, tester et documenter les [règles pfSense](regles-pfsense.md)
+- [x] Réaliser les tests de connectivité côté pfSense, voir [Tests et supervision](tests-et-supervision.md) (ping Zabbix vers Internet à investiguer)
+- [x] Ajouter un tableau de bord et une alerte de disponibilité dans Zabbix (alerte CPU : amélioration ultérieure)
+- [x] Exporter les configurations (sans aucun secret) dans le dépôt, voir [`configs/`](../configs/)
 - [ ] Relier la [partie A](partie-a-vlan.md) et la [partie B](partie-b-pfsense-zabbix.md), par exemple en reproduisant les VLAN derrière pfSense dans GNS3
 
 **Étape terminée quand** : toutes les cases sont cochées et le rapport PDF est à jour.

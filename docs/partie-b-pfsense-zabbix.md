@@ -21,9 +21,11 @@ Le détail des interfaces et des adresses est dans la page [Adressage](plan-adre
 1. **Installer pfSense CE 2.9.0** dans une VM VirtualBox. L'interface WAN est en mode Bridge sur la carte Wi-Fi, car le mode NAT empêchait l'installation (voir [Problèmes résolus](problemes-resolus.md)).
 2. **Configurer l'interface LAN** en 192.168.56.254/24, alignée sur le réseau Host-Only de VirtualBox, avec le serveur DHCP actif.
 3. **Accéder à l'interface web** de pfSense sur http://192.168.56.254 depuis le PC hôte, et changer le mot de passe administrateur par défaut.
-4. **Créer une première règle de pare-feu** : une règle de test qui bloque l'ICMP sur le LAN, appliquée avec succès. Voir [Règles pfSense](regles-pfsense.md).
+4. **Écrire les règles de pare-feu** : blocage de Telnet et SMTP sortants, ping encadré, journalisation. Voir [Règles pfSense](regles-pfsense.md).
 5. **Déployer Zabbix 7.0 LTS** sous forme d'appliance préconfigurée VirtualBox, sur le même réseau Host-Only, en 192.168.56.104.
 6. **Superviser pfSense via SNMP** : l'hôte apparaît disponible dans Zabbix et ses métriques remontent en direct.
+7. **Durcir le SNMP** : chaîne communautaire personnalisée (macro Zabbix en texte secret), écoute limitée au LAN.
+8. **Valider** : tableau de bord, alerte de disponibilité, tests de blocage. Voir [Tests et supervision](tests-et-supervision.md).
 
 ## Captures d'écran
 

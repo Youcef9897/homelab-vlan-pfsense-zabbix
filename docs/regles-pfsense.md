@@ -2,27 +2,45 @@
 
 **Navigation :** [Accueil](../README.md) · [Partie A](partie-a-vlan.md) · [Partie B](partie-b-pfsense-zabbix.md) · [Adressage](plan-adressage.md) · Règles pfSense · [Tests et supervision](tests-et-supervision.md) · [Problèmes résolus](problemes-resolus.md) · [Feuille de route](feuille-de-route.md)
 
-## Règle en place
+pfSense évalue les règles **de haut en bas** et applique la première qui correspond. L'ordre ci-dessous est donc voulu.
 
-| # | Interface | Action | Protocole | Source | Destination | Objectif | Statut |
-|---|---|---|---|---|---|---|---|
-| 1 | LAN | Bloquer | ICMP | Tous | Tous | Règle de test pour valider le fonctionnement du filtrage | Appliquée (voir la capture « Règle de pare-feu créée sur pfSense » dans la page Partie B) |
+## Règles en place (interface LAN)
 
-**À documenter** : le résultat du test, c'est-à-dire un `ping` depuis une machine du LAN avant l'application de la règle (réponse reçue) et après (aucune réponse). Une capture de chaque cas suffit.
+| # | Action | Protocole | Source | Destination | Description | Journalisée |
+|---|---|---|---|---|---|---|
+| 1 | Autoriser | * | * | LAN Address (80) | Règle anti-verrouillage (générée par pfSense) | Non |
+| 2 | Bloquer | TCP | LAN | alias `PORTS_INTERDITS` | Blocage Telnet et SMTP sortants | Oui |
+| 3 | Autoriser | ICMP (echo request) | LAN | This Firewall | Ping autorisé vers pfSense | Non |
+| 4 | Bloquer | ICMP (tous types) | LAN | Tous | Ping bloqué vers le reste du réseau | Oui |
+| 5 | Autoriser | IPv4 / IPv6 | LAN | Tous | Règles « Default allow LAN » | Non |
 
-## Règles prévues
+L'alias `PORTS_INTERDITS` regroupe les ports **23 (Telnet)** et **25 (SMTP)**.
 
-Ce tableau est une liste de pistes à tester, pas un état des lieux. Chaque ligne devient une règle réelle une fois créée, testée et documentée.
+![Règles finales du LAN](img/18-pfsense-regles-finales.jpg)
 
-| # | Interface | Action | Protocole | Source | Destination | Objectif | Test à réaliser | Statut |
-|---|---|---|---|---|---|---|---|---|
-| 2 | LAN | Autoriser | TCP/UDP | Réseau LAN | Internet | Laisser les machines du LAN sortir | Ouvrir une page web depuis une machine du LAN | À faire |
-| 3 | LAN | Autoriser | UDP/TCP 53 | Réseau LAN | pfSense (DNS) | Permettre la résolution de noms | `nslookup` depuis une machine du LAN | À faire |
-| 4 | LAN | Autoriser | UDP 161 | Zabbix (192.168.56.104) | pfSense (LAN) | Maintenir la supervision SNMP une fois le filtrage durci | Vérifier que l'hôte reste en vert dans Zabbix | À faire |
-| 5 | WAN | Bloquer | Tous | Tous | Réseau LAN | Vérifier le comportement par défaut du WAN | Test de connexion depuis l'extérieur du lab | À faire |
+![Alias PORTS_INTERDITS](img/17-pfsense-alias-ports.jpg)
 
-## Bonnes pratiques à documenter
+## Pourquoi cet ordre
 
-- Ordre des règles : pfSense les évalue de haut en bas et applique la première qui correspond. Noter pourquoi chaque règle est à sa place.
-- Journalisation : indiquer les règles dont les blocages sont journalisés, et où consulter ces journaux.
-- Sauvegarde : exporter la configuration de pfSense (Diagnostics > Backup & Restore) avant de modifier les règles, et ne jamais publier cet export tel quel dans un dépôt public, car il peut contenir des secrets.
+- Les règles de blocage doivent précéder « Default allow », sinon elles ne sont jamais atteintes (c'était le premier essai : compteur à 0/0 B).
+- La règle 3 précède la règle 4 : sans elle, le blocage de l'ICMP coupait aussi le ping de Zabbix vers pfSense et déclenchait une alerte de disponibilité.
+
+## Tests
+
+| Test | Résultat |
+|---|---|
+| Depuis Zabbix : TCP 80 vers 1.1.1.1 | Passe |
+| Depuis Zabbix : TCP 23 et 25 vers 1.1.1.1 | Bloqués (12 entrées dans le journal) |
+| Depuis Zabbix : ping vers 8.8.8.8 | Bloqué et journalisé (4 entrées) |
+| Depuis Zabbix : ping vers pfSense | Autorisé |
+
+![Console Zabbix : port 80 ouvert, 23 et 25 bloqués](img/19-zabbix-console-telnet-smtp.jpg)
+
+![Journal pfSense : blocages Telnet/SMTP](img/20-pfsense-log-telnet-smtp.jpg)
+
+![Journal pfSense : ping bloqué](img/16-pfsense-log-ping-bloque.jpg)
+
+## Pistes suivantes
+
+- Règles sur le WAN et filtrage entre sous-réseaux lorsque la partie A sera reliée à pfSense.
+- Exporter la configuration de pfSense avant toute modification, sans jamais la publier telle quelle (elle peut contenir des secrets).
