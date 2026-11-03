@@ -1,6 +1,6 @@
 # Partie A — VLAN et routage inter-VLAN (Packet Tracer)
 
-**Navigation :** [Accueil](../README.md) · Partie A · [Partie B](partie-b-pfsense-zabbix.md) · [Adressage](plan-adressage.md) · [Règles pfSense](regles-pfsense.md) · [Tests et supervision](tests-et-supervision.md) · [Problèmes résolus](problemes-resolus.md) · [Feuille de route](feuille-de-route.md)
+**Navigation :** [Accueil](../README.md) · Partie A · [Partie B](partie-b-pfsense-zabbix.md) · [Partie C](partie-c-windows-server.md) · [Adressage](plan-adressage.md) · [Règles pfSense](regles-pfsense.md) · [Tests et supervision](tests-et-supervision.md) · [Problèmes résolus](problemes-resolus.md) · [Feuille de route](feuille-de-route.md)
 
 > **En bref** : trois VLAN sur un switch Cisco 2960-24TT, un routage inter-VLAN assuré par un routeur 2901 (router-on-a-stick), un serveur DHCP par VLAN, et une ACL qui isole le VLAN Invités du VLAN Admin.
 

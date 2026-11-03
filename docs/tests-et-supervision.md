@@ -1,6 +1,6 @@
 # Tests de connectivité et supervision
 
-**Navigation :** [Accueil](../README.md) · [Partie A](partie-a-vlan.md) · [Partie B](partie-b-pfsense-zabbix.md) · [Adressage](plan-adressage.md) · [Règles pfSense](regles-pfsense.md) · Tests et supervision · [Problèmes résolus](problemes-resolus.md) · [Feuille de route](feuille-de-route.md)
+**Navigation :** [Accueil](../README.md) · [Partie A](partie-a-vlan.md) · [Partie B](partie-b-pfsense-zabbix.md) · [Partie C](partie-c-windows-server.md) · [Adressage](plan-adressage.md) · [Règles pfSense](regles-pfsense.md) · Tests et supervision · [Problèmes résolus](problemes-resolus.md) · [Feuille de route](feuille-de-route.md)
 
 ## Tests réalisés
 
@@ -23,8 +23,23 @@
 | Règle de blocage ICMP | `ping 8.8.8.8` depuis Zabbix | Aucune réponse, blocage journalisé | Bloqué, 4 entrées au journal ([détails](regles-pfsense.md)) | Réalisé |
 | Blocage Telnet / SMTP | `timeout 5 bash -c 'echo > /dev/tcp/1.1.1.1/23'` (et 25, et 80) | 23 et 25 bloqués, 80 ouvert | Conforme, 12 entrées au journal | Réalisé |
 | Accès SSH restreint (partie A) | `ssh` depuis PC0 (VLAN 10) puis PC1 (VLAN 20) | Accepté, puis refusé | Conforme | Réalisé |
-| Sortie vers Internet | HTTP vers 1.1.1.1 depuis Zabbix ; `ping 8.8.8.8` depuis pfSense | Accès fonctionnel | HTTP : « 301 Moved Permanently » ; ping depuis pfSense : 0 % de perte. Ping depuis Zabbix : 100 % de perte, **cause non confirmée** | Partiel |
+| Sortie vers Internet | HTTP vers 1.1.1.1 depuis Zabbix ; `ping 8.8.8.8` depuis pfSense | Accès fonctionnel | HTTP : « 301 Moved Permanently » ; ping depuis pfSense : 0 % de perte. Ping depuis Zabbix : 100 % de perte, **cause non confirmée** (constat fait avant la règle de blocage ICMP, qui bloque désormais ce ping volontairement) | Partiel |
 | Résolution DNS | `nslookup` depuis une machine du LAN | Nom résolu | Non testé dans cette version | À faire |
+
+### Partie C — Windows Server et Active Directory (VirtualBox)
+
+| Test | Commande ou action | Résultat attendu | Résultat obtenu | Statut |
+|---|---|---|---|---|
+| Connectivité de DC01 | `ping` vers pfSense et Zabbix | Réponse | 0 % de perte | Réalisé |
+| Bail de Zabbix après la bascule DHCP | `Get-DhcpServerv4Lease` sur DC01 | 192.168.56.104, réservation active | `ActiveReservation` ; pfSense toujours supervisé | Réalisé |
+| Configuration DHCP du client | `ipconfig` sur CLIENT01 | Adresse .100 à .150, passerelle .254, suffixe `lab.internal` | 192.168.56.100 | Réalisé |
+| Résolution du nom du contrôleur | `ping dc01.lab.internal` depuis CLIENT01 | Nom résolu | Résolu en 192.168.56.10 | Réalisé |
+| Port LDAP de DC01 | `Test-NetConnection 192.168.56.10 -Port 389` | `True` | `True` après correction ([problème 11](problemes-resolus.md)) | Réalisé |
+| Jonction au domaine | `Add-Computer` puis redémarrage | Connexion au domaine LAB proposée | « Sign in to: LAB » | Réalisé |
+| GPO lecteur R: | Session `rh01` | Lecteur R: monté, écriture possible | Conforme | Réalisé |
+| GPO Panneau de configuration | `control` dans la session `inv01` | Accès refusé | Message « Restrictions » | Réalisé |
+| Politique de mot de passe | Mot de passe de 6 caractères pour `inv01` | Refusé | Refusé par le domaine | Réalisé |
+| Verrouillage de compte | 5 échecs de connexion | Compte verrouillé 15 min | Configuré, non testé | À faire |
 
 ## Supervision Zabbix
 

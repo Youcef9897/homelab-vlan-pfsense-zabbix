@@ -1,6 +1,6 @@
 # Feuille de route
 
-**Navigation :** [Accueil](../README.md) · [Partie A](partie-a-vlan.md) · [Partie B](partie-b-pfsense-zabbix.md) · [Adressage](plan-adressage.md) · [Règles pfSense](regles-pfsense.md) · [Tests et supervision](tests-et-supervision.md) · [Problèmes résolus](problemes-resolus.md) · Feuille de route
+**Navigation :** [Accueil](../README.md) · [Partie A](partie-a-vlan.md) · [Partie B](partie-b-pfsense-zabbix.md) · [Partie C](partie-c-windows-server.md) · [Adressage](plan-adressage.md) · [Règles pfSense](regles-pfsense.md) · [Tests et supervision](tests-et-supervision.md) · [Problèmes résolus](problemes-resolus.md) · Feuille de route
 
 Le projet suit un fil conducteur : **réseaux, puis systèmes, puis supervision, puis sécurité**. Chaque étape a un livrable et un critère de fin, pour savoir quand passer à la suivante. Les cases cochées sont faites.
 
@@ -21,13 +21,14 @@ Le projet suit un fil conducteur : **réseaux, puis systèmes, puis supervision,
 
 **Étape terminée quand** : toutes les cases sont cochées et le rapport PDF est à jour.
 
-## Étape 2 — Ajouter des systèmes
+## Étape 2 — Ajouter des systèmes (en cours)
 
 **Livrable** : un petit parc de machines qui communiquent correctement derrière pfSense.
 
-- [ ] Déployer un serveur Windows Server
-- [ ] Mettre en place Active Directory : domaine, comptes, groupes, permissions
-- [ ] Déployer un client Windows et le joindre au domaine
+- [x] Déployer un serveur Windows Server, voir la [partie C](partie-c-windows-server.md)
+- [x] Mettre en place Active Directory : domaine, comptes, groupes, permissions (partage RH et trois GPO)
+- [x] Déployer un client Windows et le joindre au domaine (Windows 11, GPO testées)
+- [x] Confier le DHCP du LAN au contrôleur de domaine, avec une réservation pour Zabbix
 - [ ] Déployer un serveur Linux et documenter son administration
 - [ ] Placer toutes les machines derrière pfSense
 - [ ] Ajouter ces machines à la supervision Zabbix
