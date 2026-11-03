@@ -43,8 +43,8 @@ Le lab comporte trois volets. La **partie A** (Packet Tracer) simule les VLAN et
 | Test du verrouillage de compte après 5 échecs | Configuré, non testé |
 | Supervision de DC01 et du client dans Zabbix | À faire |
 | Ping de Zabbix vers Internet | Sans réponse avant la règle de blocage ICMP, cause non confirmée ; désormais bloqué volontairement (voir [Problèmes](docs/problemes-resolus.md)) |
-| Alerte sur la charge CPU | Non faite dans cette version |
-| Test de résolution DNS depuis le LAN | À faire |
+| Alerte sur la charge CPU | À faire |
+| Résolution DNS depuis le LAN | Noms internes testés (`dc01.lab.internal` depuis le client) ; noms Internet via le redirecteur à tester |
 | Liaison entre la partie A (Packet Tracer) et le réseau VirtualBox | À faire |
 
 ## Rapport complet

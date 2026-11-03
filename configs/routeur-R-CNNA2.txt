@@ -28,7 +28,7 @@ ip dhcp pool INVITES
 ip cef
 no ipv6 cef
 !
-! username admin secret [RETIRE]
+! username [RETIRE] secret [RETIRE]
 !
 ip ssh version 2
 no ip domain-lookup
