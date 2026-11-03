@@ -12,7 +12,7 @@ ip ssh version 2
 no ip domain-lookup
 ip domain-name lab.local
 !
-! username admin secret [RETIRE]
+! username [RETIRE] secret [RETIRE]
 !
 spanning-tree mode pvst
 spanning-tree extend system-id

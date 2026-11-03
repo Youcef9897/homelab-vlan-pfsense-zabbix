@@ -24,7 +24,7 @@
 | Blocage Telnet / SMTP | `timeout 5 bash -c 'echo > /dev/tcp/1.1.1.1/23'` (et 25, et 80) | 23 et 25 bloqués, 80 ouvert | Conforme, 12 entrées au journal | Réalisé |
 | Accès SSH restreint (partie A) | `ssh` depuis PC0 (VLAN 10) puis PC1 (VLAN 20) | Accepté, puis refusé | Conforme | Réalisé |
 | Sortie vers Internet | HTTP vers 1.1.1.1 depuis Zabbix ; `ping 8.8.8.8` depuis pfSense | Accès fonctionnel | HTTP : « 301 Moved Permanently » ; ping depuis pfSense : 0 % de perte. Ping depuis Zabbix : 100 % de perte, **cause non confirmée** (constat fait avant la règle de blocage ICMP, qui bloque désormais ce ping volontairement) | Partiel |
-| Résolution DNS | `nslookup` depuis une machine du LAN | Nom résolu | Non testé dans cette version | À faire |
+| Résolution DNS d'un nom Internet | `nslookup` d'un nom public depuis une machine du LAN | Nom résolu (DC01 → redirecteur pfSense) | Non testé | À faire |
 
 ### Partie C — Windows Server et Active Directory (VirtualBox)
 
@@ -59,9 +59,10 @@ Le déclencheur « Unavailable by ICMP ping » est passé en **PROBLEM** puis en
 
 ![Alerte RESOLVED](img/14-zabbix-alerte-resolved.jpg)
 
-### Limites de cette version
+### Limites
 
 - Aucun déclencheur sur la charge CPU : le modèle utilisé n'en fournit pas par défaut et aucun élément CPU n'a été configuré. Piste d'amélioration.
+- DC01 et CLIENT01 ne sont pas encore supervisés par Zabbix.
 
 ### Bonne pratique
 
