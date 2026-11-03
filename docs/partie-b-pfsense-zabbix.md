@@ -1,6 +1,6 @@
 # Partie B — pfSense et Zabbix (VirtualBox)
 
-**Navigation :** [Accueil](../README.md) · [Partie A](partie-a-vlan.md) · Partie B · [Adressage](plan-adressage.md) · [Règles pfSense](regles-pfsense.md) · [Tests et supervision](tests-et-supervision.md) · [Problèmes résolus](problemes-resolus.md) · [Feuille de route](feuille-de-route.md)
+**Navigation :** [Accueil](../README.md) · [Partie A](partie-a-vlan.md) · Partie B · [Partie C](partie-c-windows-server.md) · [Adressage](plan-adressage.md) · [Règles pfSense](regles-pfsense.md) · [Tests et supervision](tests-et-supervision.md) · [Problèmes résolus](problemes-resolus.md) · [Feuille de route](feuille-de-route.md)
 
 > **En bref** : un pare-feu pfSense installé et sécurisé dans une VM VirtualBox, avec des règles de filtrage testées et journalisées, et un serveur Zabbix qui le supervise via SNMP (tableau de bord et alerte de disponibilité).
 
@@ -15,6 +15,8 @@ Zabbix (192.168.56.104) ── supervise pfSense via SNMP
 ```
 
 Le détail des interfaces et des adresses est dans la page [Adressage](plan-adressage.md).
+
+> Dans la version finale, le contrôleur de domaine DC01 (192.168.56.10) a rejoint ce réseau et fournit le DHCP du LAN à la place de pfSense. Voir la [partie C](partie-c-windows-server.md).
 
 ## Étapes réalisées
 
